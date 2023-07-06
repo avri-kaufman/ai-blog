@@ -29,15 +29,11 @@ class Login extends React.Component {
     event.preventDefault();
     const { username, password } = this.state;
     axios
-      .post(
-        "http://127.0.0.1:5000/Login",
-        { user: username, password },
-        { withCredentials: true }
-      )
+      .post("/Login", { user: username, password })
       .then((response) => {
         // Handle successful login
         console.log(response.data);
-        window.location.replace("http://127.0.0.1:3000/");
+        window.location.replace("/");
       })
       .catch((error) => {
         // Handle login error

@@ -7,7 +7,7 @@ class NavBar extends React.Component {
   state = { query: "", results: [] };
 
   search = async () => {
-    const res = await axios.get("http://localhost:5000/search", {
+    const res = await axios.get("/search", {
       params: { q: this.state.query },
     });
     this.setState({ results: res.data });

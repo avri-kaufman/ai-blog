@@ -5,11 +5,11 @@ import axios from "axios";
 class Logout extends React.Component {
   handleLogout = () => {
     axios
-      .post("http://127.0.0.1:5000/Logout")
+      .post("/Logout")
       .then(() => {
         // Handle successful logout
         // Redirect the user to the login page
-        window.location.href = "http://127.0.0.1:5000/Login";
+        window.location.href = "/Login";
       })
       .catch((error) => {
         // Handle logout error

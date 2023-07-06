@@ -17,7 +17,7 @@ class Posts extends React.Component {
 
 
   getAllPosts = () => {
-    const url = "http://127.0.0.1:5000/posts";
+    const url = "/posts";
     axios.get(url, { withCredentials: true }).then((res) => {
       console.log(res);
       this.setState({

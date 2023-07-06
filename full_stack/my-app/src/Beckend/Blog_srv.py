@@ -9,12 +9,19 @@ from datetime import datetime
 from functools import wraps
 from flask import g
 
-db = mysql.connect(
+
+pool = mysql.pooling.MySQLConnectionPool(
     host="localhost",
     user="root",
     password=dbpwd,
     database="blogdb",
+    buffered=True,
+    pool_size=5,
+    pool_name="blog_avi"
 )
+#put in every func
+#db = pool.get_connection()
+#db.close()
 
 # db = mysql.connect(
 #     host="database-avi.cbrdyb6rueag.eu-central-1.rds.amazonaws.com",
@@ -24,12 +31,10 @@ db = mysql.connect(
 # )
 
 app = Flask(__name__)
-CORS(app, supports_credentials=True, origins=[
-     "http://localhost:3000", "http://localhost:5000"], expose_headers='Set-Cookie')
-
 
 @app.route('/SignUp', methods=['POST'])
 def signup():
+    db = pool.get_connection()
     data = request.get_json()
     username = data['username']
     email = data['email']
@@ -44,6 +49,7 @@ def signup():
     db.commit()
     new_user = cursor.lastrowid
     cursor.close()
+    db.close()
     return get_user_by_id(new_user)
 
 
@@ -87,14 +93,14 @@ def login():
     db.commit()
     cursor.close()
     resp = make_response()
-    resp.set_cookie("session_id", value=session_id, path="/",
-                    samesite='None', secure=True)
+    resp.set_cookie("session_id", value=session_id)
     return resp
 
 
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
+        db = pool.get_connection()
         session_id = request.cookies.get('session_id')
         if session_id is None:
             abort(401)
@@ -107,12 +113,14 @@ def login_required(f):
         if result is None:
             abort(401)
         g.user_id = result[0]
+        db.close()
         return f(*args, **kwargs)
     return decorated_function
 
 
 @app.route('/Logout', methods=['POST'])
 def logout():
+    db = pool.get_connection()
     session_id = request.cookies.get('session_id')
 
     if session_id:
@@ -125,15 +133,17 @@ def logout():
         cursor.close()
 
     # Clear session cookies
-    resp = make_response(redirect('/Login'))
-    resp.set_cookie("session_id", "", expires=0)
-
+    resp = make_response("user logout seccesfuly")
+    resp.delete_cookie("session_id", "", expires=0)
+    db.close()
     return resp
 
 
 @app.route('/posts', methods=['GET'])
 def get_all_posts():
+    db = pool.get_connection()
     try:
+        
         curser = db.cursor()
         query = "SELECT id, title, content, user_id, category_id, created_at, updated_at FROM Posts"
         curser.execute(query)
@@ -157,27 +167,31 @@ def get_all_posts():
             data.append(dict(zip(header, record)))
 
         curser.close()
+        db.close()
         return json.dumps(data)
     except Exception as ex:
         print(ex)
 
 
 @app.route('/posts', methods=['POST'])
-@login_required
+#@login_required
 def add_new_post():
-    data = request.get_json()
+    db = pool.get_connection()
+    data = request.get_json
     query = 'insert into Posts (title, content, user_id, category_id)values(%s, %s, %s, %s)'
-    values = (data['title'], data['content'], g.user_id, 1)
+    values = (data['title'], data['content'], 1, 1)
     cursor = db.cursor()
     cursor.execute(query, values)
     db.commit()
     new_post_id = cursor.lastrowid
     cursor.close()
+    db.close()
     return get_single_post(new_post_id)
 
 
 @app.route('/posts/<post_id>', methods=['GET'])
 def get_single_post(post_id):
+    db = pool.get_connection()
     cursor = db.cursor()
     query = "SELECT id, title, content, user_id, category_id, created_at, updated_at FROM Posts WHERE id = %s"
     values = (post_id,)
@@ -205,6 +219,7 @@ def get_single_post(post_id):
               "category_id", "created_at", "updated_at"]
 
     cursor.close()
+    db.close()
     return json.dumps(dict(zip(header, record)))
 
 # need to fix the js code on the search post... button

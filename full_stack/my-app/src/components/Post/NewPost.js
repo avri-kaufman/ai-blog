@@ -23,7 +23,7 @@ const NewPost = () => {
       return; // Early return
     }
 
-    const url = "http://127.0.0.1:5000/posts";
+    const url = "/posts";
     const data = { title, content };
     axios
       .post(url, data)
