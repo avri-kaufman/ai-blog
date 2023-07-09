@@ -18,14 +18,19 @@ const PostPage = () => {
 
   if (!post) return null; // Render nothing if post data is not yet fetched
 
-  const postContent = post.content.split('\n\n').map((paragraph, i) => 
-    <Typography variant="body1" gutterBottom key={i} style={{ marginBottom: '1em' }}>
-      {paragraph.replace(/\n/g, ' ')}
+  const postContent = post.content.split("\n\n").map((paragraph, i) => (
+    <Typography
+      variant="body1"
+      gutterBottom
+      key={i}
+      style={{ marginBottom: "1em" }}
+    >
+      {paragraph.replace(/\n/g, " ")}
     </Typography>
-  );
+  ));
 
   return (
-    <Card style={{ margin: "16px" }}>
+    <Card style={{ marginTop: "3%", marginLeft: "7%", marginRight: "7%" }}>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {post.title}

@@ -17,11 +17,14 @@ class Logout extends React.Component {
       });
   };
 
+ 
+
   render() {
     return (
       <Button variant="contained" color="primary" onClick={this.handleLogout}>
         Logout
       </Button>
+
     );
   }
 }

@@ -78,12 +78,14 @@ def login():
     cursor.close()
 
     if not record:
+        db.close()
         abort(401)
 
     user_id = record[0]
     hashed_pwd = record[2]
 
     if not bcrypt.checkpw(data['password'].encode('utf-8'), hashed_pwd.encode('utf-8')):
+        db.close()
         abort(401)
 
     query = "insert into  sessions (user_id, session_id) values (%s, %s)"
@@ -94,30 +96,28 @@ def login():
     db.commit()
     cursor.close()
     db.close()
-    resp = make_response()
+    resp = make_response({"status": "success", "message": "Logged in successfully", "session_id": session_id})
     resp.set_cookie("session_id", value=session_id)
     return resp
 
 
-# def login_required(f):
-#     @wraps(f)
-#     def decorated_function(*args, **kwargs):
-#         db = pool.get_connection()
-#         session_id = request.cookies.get('session_id')
-#         if session_id is None:
-#             abort(401)
-#         cursor = db.cursor()
-#         query = "SELECT user_id FROM sessions WHERE session_id = %s"
-#         values = (session_id,)
-#         cursor.execute(query, values)
-#         result = cursor.fetchone()
-#         cursor.close()
-#         if result is None:
-#             abort(401)
-#         g.user_id = result[0]
-#         db.close()
-#         return f(*args, **kwargs)
-#     return decorated_function
+@app.route('/check_login_status', methods=['GET'])
+def check_login_status():
+    db = pool.get_connection()
+    session_id = request.cookies.get('session_id')
+    if session_id:
+        cursor = db.cursor()
+        query = "SELECT user_id FROM sessions WHERE session_id = %s"
+        values = (session_id,)
+        cursor.execute(query, values)
+        result = cursor.fetchone()
+        cursor.close()
+        db.close()
+        if result:
+            return {"status": "success", "message": "Logged in"}
+    db.close()     
+    return {"status": "error", "message": "Not logged in"}
+     
 
 
 @app.route('/Logout', methods=['POST'])
@@ -143,9 +143,9 @@ def logout():
 
 @app.route('/posts', methods=['GET'])
 def get_all_posts():
-    db = pool.get_connection()
+    
     try:
-        
+        db = pool.get_connection()
         curser = db.cursor()
         query = "SELECT id, title, content, user_id, category_id, created_at, updated_at FROM Posts"
         curser.execute(query)
@@ -179,7 +179,7 @@ def get_all_posts():
 #@login_required
 def add_new_post():
     db = pool.get_connection()
-    data = request.get_json
+    data = request.get_json()
     query = 'insert into Posts (title, content, user_id, category_id)values(%s, %s, %s, %s)'
     values = (data['title'], data['content'], 1, 1)
     cursor = db.cursor()
@@ -201,6 +201,7 @@ def get_single_post(post_id):
     record = cursor.fetchone()
 
     if not record:
+        db.close()
         abort(404)
 
     record = list(record)

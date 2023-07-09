@@ -2,9 +2,27 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box, Input } from "@mui/material";
 import axios from "axios";
+import Logout from "./Logout";
 
 class NavBar extends React.Component {
-  state = { query: "", results: [] };
+  state = { query: "", results: [], isLoggedIn: false };
+
+  componentDidMount() {
+    // Check if user is logged in when the component mounts
+    this.checkLoginStatus();
+  }
+
+  checkLoginStatus = async () => {
+    try {
+      const response = await axios.get("/check_login_status");
+      if (response.data.status === "success") {
+        this.setState({ isLoggedIn: true });
+      }
+    } catch (error) {
+      console.log(error);
+      this.setState({ isLoggedIn: false });
+    }
+  };
 
   search = async () => {
     const res = await axios.get("/search", {
@@ -70,33 +88,39 @@ class NavBar extends React.Component {
               </Typography>
             </Box>
             <Box textAlign={{ xs: "left", md: "right" }}>
-              <Button color="inherit">
-                <NavLink
-                  to="/Login"
-                  className="active"
-                  style={{ textDecoration: "none", color: "white" }}
-                >
-                  Login
-                </NavLink>
-              </Button>
-              <Button color="inherit">
-                <NavLink
-                  to="/Logout"
-                  className="active"
-                  style={{ textDecoration: "none", color: "white" }}
-                >
+              {!this.state.isLoggedIn ? (
+                <>
+                  <Button color="inherit">
+                    <NavLink
+                      to="/Login"
+                      className="active"
+                      style={{ textDecoration: "none", color: "white" }}
+                    >
+                      Login
+                    </NavLink>
+                  </Button>
+                  <Button color="inherit">
+                    <NavLink
+                      to="/SignUp"
+                      className="active"
+                      style={{ textDecoration: "none", color: "white" }}
+                    >
+                      Sign up
+                    </NavLink>
+                  </Button>
+                </>
+              ) : (
+                <Button color="inherit" >
+                  <NavLink
+                    to="/Logout"
+                    className="active"
+                    style={{ textDecoration: "none", color: "white" }}
+                  >
                   Logout
-                </NavLink>
-              </Button>
-              <Button color="inherit">
-                <NavLink
-                  to="/SignUp"
-                  className="active"
-                  style={{ textDecoration: "none", color: "white" }}
-                >
-                  Sign up
-                </NavLink>
-              </Button>
+                  </NavLink>
+                </Button>
+
+              )}
               <Input
                 type="search"
                 value={this.state.query}
