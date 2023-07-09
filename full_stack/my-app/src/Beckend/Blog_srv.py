@@ -19,9 +19,7 @@ pool = mysql.pooling.MySQLConnectionPool(
     pool_size=5,
     pool_name="blog_avi"
 )
-#put in every func
-#db = pool.get_connection()
-#db.close()
+
 
 # db = mysql.connect(
 #     host="database-avi.cbrdyb6rueag.eu-central-1.rds.amazonaws.com",
@@ -54,12 +52,14 @@ def signup():
 
 
 def get_user_by_id(user_id):
+    db = pool.get_connection()
     query = "select username, email, password, created_at from users where id = %s"
     value = (user_id,)
     cursor = db.cursor()
     cursor.execute(query, value)
     record = cursor.fetchone()
     cursor.close()
+    db.close()
     record = list(record)
     record[3] = record[3].strftime("%Y-%m-%d %H:%M:%S")
     header = ['username', "email", "hash_passowrd", "created_at"]
@@ -68,6 +68,7 @@ def get_user_by_id(user_id):
 
 @app.route('/Login', methods=['POST'])
 def login():
+    db = pool.get_connection()
     data = request.get_json()
     query = "select id, username, password from users where username = %s"
     values = (data['user'],)
@@ -92,30 +93,31 @@ def login():
     cursor.execute(query, values)
     db.commit()
     cursor.close()
+    db.close()
     resp = make_response()
     resp.set_cookie("session_id", value=session_id)
     return resp
 
 
-def login_required(f):
-    @wraps(f)
-    def decorated_function(*args, **kwargs):
-        db = pool.get_connection()
-        session_id = request.cookies.get('session_id')
-        if session_id is None:
-            abort(401)
-        cursor = db.cursor()
-        query = "SELECT user_id FROM sessions WHERE session_id = %s"
-        values = (session_id,)
-        cursor.execute(query, values)
-        result = cursor.fetchone()
-        cursor.close()
-        if result is None:
-            abort(401)
-        g.user_id = result[0]
-        db.close()
-        return f(*args, **kwargs)
-    return decorated_function
+# def login_required(f):
+#     @wraps(f)
+#     def decorated_function(*args, **kwargs):
+#         db = pool.get_connection()
+#         session_id = request.cookies.get('session_id')
+#         if session_id is None:
+#             abort(401)
+#         cursor = db.cursor()
+#         query = "SELECT user_id FROM sessions WHERE session_id = %s"
+#         values = (session_id,)
+#         cursor.execute(query, values)
+#         result = cursor.fetchone()
+#         cursor.close()
+#         if result is None:
+#             abort(401)
+#         g.user_id = result[0]
+#         db.close()
+#         return f(*args, **kwargs)
+#     return decorated_function
 
 
 @app.route('/Logout', methods=['POST'])
@@ -134,7 +136,7 @@ def logout():
 
     # Clear session cookies
     resp = make_response("user logout seccesfuly")
-    resp.delete_cookie("session_id", "", expires=0)
+    resp.set_cookie("session_id", "", expires=0)
     db.close()
     return resp
 
