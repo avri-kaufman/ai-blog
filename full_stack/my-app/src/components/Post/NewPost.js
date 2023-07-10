@@ -30,18 +30,23 @@ const NewPost = () => {
       .then((res) => {
         setResp("Success, new post added!");
         setTimeout(() => {
+          setResp(null);
           navigate("/");
         }, 4000); // Clear the message after 4 seconds and navigate to home page
       })
       .catch((err) => {
         if (err.response && err.response.status === 401) {
           setResp("You need to log in to add a new post.");
+          setTimeout(() => {
+            setResp(null);
+            navigate("/Login");
+          }, 4000); // Clear the message and navigate to login page after 4 seconds
         } else {
           setResp("Error: something went wrong, try again.");
+          setTimeout(() => {
+            setResp(null);
+          }, 4000); // Clear the message after 4 seconds
         }
-        setTimeout(() => {
-          setResp(null);
-        }, 4000); // Clear the message after 4 seconds
       });
   };
 

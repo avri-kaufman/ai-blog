@@ -7,7 +7,7 @@ from flask_cors import CORS
 from flask import Flask, request, abort, make_response, redirect
 from datetime import datetime
 from functools import wraps
-from flask import g
+from flask import jsonify
 
 
 pool = mysql.pooling.MySQLConnectionPool(
@@ -177,18 +177,29 @@ def get_all_posts():
 
 @app.route('/posts', methods=['POST'])
 def add_new_post():
+    login_status = check_login_status()
+    
+    if login_status["status"] == "error":
+        return make_response(jsonify({'message': 'You need to log in to add a new post.'}), 401)
+    
+    user_id = login_status["user_id"]
+    
     db = pool.get_connection()
     data = request.get_json()
-    user_id = check_login_status()["user_id"]
-    query = 'insert into Posts (title, content, user_id, category_id)values(%s, %s, %s, %s)'
+    query = 'insert into Posts (title, content, user_id, category_id) values(%s, %s, %s, %s)'
     values = (data['title'], data['content'], user_id, 1)
+    
     cursor = db.cursor()
     cursor.execute(query, values)
+    
     db.commit()
+    
     new_post_id = cursor.lastrowid
     cursor.close()
     db.close()
+    
     return get_single_post(new_post_id)
+
 
 
 @app.route('/posts/<post_id>', methods=['GET'])
