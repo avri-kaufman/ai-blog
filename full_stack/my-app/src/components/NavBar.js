@@ -2,7 +2,6 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 import { AppBar, Toolbar, Typography, Button, Box, Input } from "@mui/material";
 import axios from "axios";
-import Logout from "./Logout";
 
 class NavBar extends React.Component {
   state = { query: "", results: [], isLoggedIn: false };
@@ -110,16 +109,15 @@ class NavBar extends React.Component {
                   </Button>
                 </>
               ) : (
-                <Button color="inherit" >
+                <Button color="inherit">
                   <NavLink
                     to="/Logout"
                     className="active"
                     style={{ textDecoration: "none", color: "white" }}
                   >
-                  Logout
+                    Logout
                   </NavLink>
                 </Button>
-
               )}
               <Input
                 type="search"

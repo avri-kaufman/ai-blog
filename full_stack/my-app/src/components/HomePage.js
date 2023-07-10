@@ -4,7 +4,6 @@ import Latest from "./Post/Latest.js";
 import Popular from "./Post/Popular.js";
 import "./App/App.css";
 import Grid from "@mui/material/Grid";
-import axios from "axios";
 import Posts from "./Post/Posts.js";
 
 class HomePage extends React.Component {

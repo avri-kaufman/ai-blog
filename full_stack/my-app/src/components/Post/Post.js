@@ -1,6 +1,8 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Typography, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
 
 const Post = (props) => {
   const navigate = useNavigate();
@@ -14,6 +16,16 @@ const Post = (props) => {
     abbreviatedContent += "...";
   }
 
+  const handleDelete = async () => {
+    // Add your delete logic here
+    // Example: await axios.delete(`/posts/${id}`);
+  };
+
+  const handleEdit = () => {
+    // Add your edit logic here
+    // For example, you might want to redirect to an edit page for the post
+  };
+
   return (
     <Card
       onClick={() => {
@@ -21,6 +33,22 @@ const Post = (props) => {
       }}
       style={{ margin: "16px", cursor: "pointer" }}
     >
+      <IconButton
+        aria-label="delete"
+        size="large"
+        onClick={handleDelete}
+        style={{ float: "right" }}
+      >
+        <DeleteIcon />
+      </IconButton>
+      <IconButton
+        aria-label="edit"
+        size="large"
+        onClick={handleEdit}
+        style={{ float: "right" }}
+      >
+        <EditIcon />
+      </IconButton>
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {props.title}

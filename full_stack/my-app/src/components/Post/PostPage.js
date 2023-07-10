@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Card, CardContent, Typography } from "@mui/material";
+import { Card, CardContent, Typography, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
+import EditIcon from "@mui/icons-material/Edit";
 
 const PostPage = () => {
   const { id } = useParams();
@@ -29,8 +31,35 @@ const PostPage = () => {
     </Typography>
   ));
 
+  const handleDelete = async () => {
+    // Add your delete logic here
+    // Example: await axios.delete(`/posts/${id}`);
+  };
+
+  const handleEdit = () => {
+    // Add your edit logic here
+    // For example, you might want to redirect to an edit page for the post
+  };
+
   return (
     <Card style={{ marginTop: "3%", marginLeft: "7%", marginRight: "7%" }}>
+      <IconButton
+        aria-label="delete"
+        size="large"
+        onClick={handleDelete}
+        style={{ float: "right" }}
+      >
+        <DeleteIcon />
+      </IconButton>
+      <IconButton
+        aria-label="edit"
+        size="large"
+        onClick={handleEdit}
+        style={{ float: "right" }}
+      >
+        <EditIcon />
+      </IconButton>
+
       <CardContent>
         <Typography variant="h6" gutterBottom>
           {post.title}
