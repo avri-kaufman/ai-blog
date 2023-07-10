@@ -15,19 +15,13 @@ class Logout extends React.Component {
     axios
       .post("/Logout")
       .then(() => {
-        // Handle successful logout
-        setTimeout(() => {
-          this.setState({ loading: false }, () => {
-            window.location.href = "/";
-          });
-        }, 1300); 
+        this.setState({ loading: false }, () => {
+          window.location.href = "/";
+        });
       })
       .catch((error) => {
-        // Handle logout error
         console.error(error);
-        setTimeout(() => {
-          this.setState({ loading: false });
-        }, 1500); 
+        this.setState({ loading: false });
       });
   };
 

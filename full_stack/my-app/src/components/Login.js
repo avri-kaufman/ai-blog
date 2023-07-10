@@ -7,6 +7,7 @@ import {
   Card,
   CardContent,
   Typography,
+  CircularProgress,
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
@@ -17,7 +18,8 @@ class Login extends React.Component {
     this.state = {
       username: "",
       password: "",
-      rrorMessage: ""
+      errorMessage: "",
+      loading: false,
     };
   }
 
@@ -29,20 +31,23 @@ class Login extends React.Component {
   handleSubmit = (event) => {
     event.preventDefault();
     const { username, password } = this.state;
-    axios
-      .post("/Login", { user: username, password })
-      .then((response) => {
-        // Handle successful login
-        console.log(response.data);
-        window.location.replace("/");
-      })
-      .catch((error) => {
-        // Handle login error
-        console.error(error);
-      });
+    this.setState({ loading: true }, () => {
+      axios
+        .post("/Login", { user: username, password })
+        .then((response) => {
+          this.setState({ loading: false }, () => {
+            window.location.replace("/");
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+          this.setState({ loading: false });
+        });
+    });
   };
 
   render() {
+    const { loading } = this.state;
     return (
       <Box
         id="login"
@@ -67,6 +72,7 @@ class Login extends React.Component {
                       name="username"
                       value={this.state.username}
                       onChange={this.handleInputChange}
+                      disabled={loading}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -79,6 +85,7 @@ class Login extends React.Component {
                       name="password"
                       value={this.state.password}
                       onChange={this.handleInputChange}
+                      disabled={loading}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -87,6 +94,7 @@ class Login extends React.Component {
                       variant="contained"
                       color="primary"
                       type="submit"
+                      disabled={loading}
                     >
                       Login
                     </Button>
@@ -98,6 +106,13 @@ class Login extends React.Component {
                       </NavLink>
                     </Box>
                   </Grid>
+                  {loading && (
+                    <Grid item xs={12}>
+                      <Box display="flex" justifyContent="center">
+                        <CircularProgress />
+                      </Box>
+                    </Grid>
+                  )}
                 </Grid>
               </form>
             </Box>
