@@ -15,7 +15,6 @@ class Posts extends React.Component {
     this.getAllPosts();
   }
 
-
   getAllPosts = () => {
     const url = "/posts";
     axios.get(url, { withCredentials: true }).then((res) => {
@@ -25,6 +24,10 @@ class Posts extends React.Component {
         resp: null,
       });
     });
+  };
+
+  handlePostDelete = () => {
+    this.getAllPosts();
   };
 
   render() {
@@ -39,6 +42,8 @@ class Posts extends React.Component {
             category_id={item.category_id}
             created_at={item.created_at}
             updated_at={item.updated_at}
+            user_id={item.user_id}
+            onDelete={this.handlePostDelete}
           />
         ))}
       </div>

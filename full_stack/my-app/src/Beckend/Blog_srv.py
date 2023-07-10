@@ -114,10 +114,10 @@ def check_login_status():
         cursor.close()
         db.close()
         if result:
-            return {"status": "success", "message": "Logged in"}
+            return {"status": "success", "message": "Logged in", "user_id": result[0]}
     db.close()     
     return {"status": "error", "message": "Not logged in"}
-     
+   
 
 
 @app.route('/Logout', methods=['POST'])
@@ -176,12 +176,12 @@ def get_all_posts():
 
 
 @app.route('/posts', methods=['POST'])
-#@login_required
 def add_new_post():
     db = pool.get_connection()
     data = request.get_json()
+    user_id = check_login_status()["user_id"]
     query = 'insert into Posts (title, content, user_id, category_id)values(%s, %s, %s, %s)'
-    values = (data['title'], data['content'], 1, 1)
+    values = (data['title'], data['content'], user_id, 1)
     cursor = db.cursor()
     cursor.execute(query, values)
     db.commit()
@@ -224,6 +224,52 @@ def get_single_post(post_id):
     cursor.close()
     db.close()
     return json.dumps(dict(zip(header, record)))
+
+
+@app.route('/posts/<int:post_id>', methods=['DELETE'])
+def delete_post(post_id):
+    db = pool.get_connection()
+    cursor = db.cursor()
+
+    # Get the session_id from the request cookies
+    session_id = request.cookies.get('session_id')
+
+    if session_id:
+        # Fetch the logged-in user_id
+        query = "SELECT user_id FROM sessions WHERE session_id = %s"
+        values = (session_id,)
+        cursor.execute(query, values)
+        result = cursor.fetchone()
+
+        if result:
+            user_id = result[0]
+            # Fetch the author of the post
+            query = "SELECT user_id FROM Posts WHERE id = %s"
+            values = (post_id,)
+            cursor.execute(query, values)
+            result = cursor.fetchone()
+
+            if result:
+                post_author_id = result[0]
+                # Compare logged-in user_id and post author's user_id
+                if user_id == post_author_id:
+                    # If match, proceed to delete the post
+                    query = "DELETE FROM Posts WHERE id = %s"
+                    values = (post_id,)
+                    cursor.execute(query, values)
+                    db.commit()
+                    cursor.close()
+                    db.close()
+                    return {"status": "success", "message": "Post deleted"}, 200
+                else:
+                    return {"status": "error", "message": "Permission denied"}, 403
+            else:
+                return {"status": "error", "message": "Post not found"}, 404
+        else:
+            return {"status": "error", "message": "Not logged in"}, 403
+    else:
+        return {"status": "error", "message": "Not logged in"}, 403
+
 
 # need to fix the js code on the search post... button
 # @app.route('/search', methods=['GET'])
