@@ -39,6 +39,7 @@ const Post = (props) => {
 
   const handleEdit = (event) => {
     event.stopPropagation();
+    navigate(`/edit-post/${props.id}`);
   };
 
   return (

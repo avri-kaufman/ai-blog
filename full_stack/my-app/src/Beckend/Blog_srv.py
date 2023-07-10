@@ -3,11 +3,10 @@ import bcrypt
 import json
 from settings import dbpwd
 import mysql.connector as mysql
-from flask_cors import CORS
-from flask import Flask, request, abort, make_response, redirect
+from flask import Flask, request,jsonify,  abort, make_response, redirect
 from datetime import datetime
 from functools import wraps
-from flask import jsonify
+from werkzeug.exceptions import Forbidden
 
 
 pool = mysql.pooling.MySQLConnectionPool(
@@ -199,6 +198,42 @@ def add_new_post():
     db.close()
     
     return get_single_post(new_post_id)
+
+
+@app.route('/posts/<post_id>', methods=['PUT'])
+def edit_post(post_id):
+    login_status = check_login_status()
+    
+    if login_status["status"] == "error":
+        return make_response(jsonify({'message': 'You need to log in to edit a post.'}), 401)
+
+    user_id = login_status["user_id"]
+    
+    db = pool.get_connection()
+    data = request.get_json()
+
+    cursor = db.cursor()
+
+    # Get the original post to check the author
+    query = 'SELECT user_id FROM Posts WHERE id = %s'
+    values = (post_id,)
+    cursor.execute(query, values)
+    result = cursor.fetchone()
+
+    if result is None or result[0] != user_id:
+        return make_response(jsonify({'message': 'You are not authorized to edit this post.'}), 403)
+
+    # Update the post
+    query = 'UPDATE Posts SET title = %s, content = %s WHERE id = %s'
+    values = (data['title'], data['content'], post_id)#need to update last update
+    cursor.execute(query, values)
+
+    db.commit()
+
+    cursor.close()
+    db.close()
+
+    return get_single_post(post_id)
 
 
 

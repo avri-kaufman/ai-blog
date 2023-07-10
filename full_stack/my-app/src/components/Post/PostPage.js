@@ -27,7 +27,7 @@ const PostPage = () => {
         setUserId(res.data.user_id);
       }
     };
-    
+
     checkLoginStatus();
   }, []);
 
@@ -46,7 +46,7 @@ const PostPage = () => {
 
   const handleDelete = async (event) => {
     event.stopPropagation();
-      
+
     try {
       await axios.delete(`/posts/${id}`);
       navigate("/"); // Navigates to the home page
@@ -56,7 +56,7 @@ const PostPage = () => {
   };
 
   const handleEdit = () => {
-    // Add your edit logic here
+    navigate(`/edit-post/${id}`);
   };
 
   return (
