@@ -36,6 +36,7 @@ class Posts extends React.Component {
       <div>
         {data.map((item) => (
           <Post
+            key={item.id}
             id={item.id}
             title={item.title}
             content={item.content}

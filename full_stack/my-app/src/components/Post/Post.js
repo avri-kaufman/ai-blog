@@ -8,6 +8,7 @@ import EditIcon from "@mui/icons-material/Edit";
 const Post = (props) => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState(null);
+  const [userName, setUserName] = useState(""); // added
 
   useEffect(() => {
     const checkLoginStatus = async () => {
@@ -17,7 +18,19 @@ const Post = (props) => {
       }
     };
 
+    const getUserById = async () => {
+      try {
+        const res = await axios.get(`/get_user_by_id/${props.user_id}`);
+        if (res.status === 200) {
+          setUserName(res.data.username); // Update username state
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
     checkLoginStatus();
+    getUserById(); // call this function
   }, []);
 
   let sentences = props.content.split(". ");
@@ -73,6 +86,7 @@ const Post = (props) => {
         <Typography variant="h6" gutterBottom>
           {props.title}
         </Typography>
+        <Typography color="textSecondary">written by: {userName}</Typography>
         <Typography variant="body1" gutterBottom>
           {abbreviatedContent}
         </Typography>

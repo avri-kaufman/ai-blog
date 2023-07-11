@@ -6,7 +6,7 @@ import mysql.connector as mysql
 from flask import Flask, request,jsonify,  abort, make_response, redirect
 from datetime import datetime
 from functools import wraps
-from werkzeug.exceptions import Forbidden
+
 
 
 pool = mysql.pooling.MySQLConnectionPool(
@@ -49,7 +49,7 @@ def signup():
     db.close()
     return get_user_by_id(new_user)
 
-
+@app.route('/get_user_by_id/<user_id>', methods=['GET'])
 def get_user_by_id(user_id):
     db = pool.get_connection()
     query = "select username, email, password, created_at from users where id = %s"
