@@ -9,12 +9,14 @@ const PostPage = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [author, setAuthor] = useState(null); // Added
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
       const res = await axios.get(`/posts/${id}`);
       setPost(res.data);
+      setAuthor(res.data.author); // Set the author
     };
 
     fetchPost();
@@ -86,6 +88,8 @@ const PostPage = () => {
         <Typography variant="h6" gutterBottom>
           {post.title}
         </Typography>
+        <Typography color="textSecondary">Written by: {author}</Typography>
+
         {postContent}
         <Typography color="textSecondary">
           Category: {post.category_id}

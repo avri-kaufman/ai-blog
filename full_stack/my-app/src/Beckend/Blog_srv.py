@@ -241,7 +241,7 @@ def edit_post(post_id):
 def get_single_post(post_id):
     db = pool.get_connection()
     cursor = db.cursor()
-    query = "SELECT id, title, content, user_id, category_id, created_at, updated_at FROM Posts WHERE id = %s"
+    query = "SELECT p.id, p.title, p.content, p.user_id, p.category_id, p.created_at, p.updated_at, u.username AS author FROM Posts p JOIN users u ON p.user_id = u.id WHERE p.id = %s"
     values = (post_id,)
     cursor.execute(query, values)
     record = cursor.fetchone()
@@ -252,24 +252,14 @@ def get_single_post(post_id):
 
     record = list(record)
 
-    # Fetch the category name
-    query = "SELECT name FROM categories WHERE id = %s"
-    values = (str(record[4]),)
-    cursor.execute(query, values)
-    category_name = cursor.fetchone()
-    if category_name:
-        record[4] = category_name[0]
-    else:
-        record[4] = 'Category not found'
-
     record[5] = record[5].strftime("%Y-%m-%d %H:%M:%S")
     record[6] = record[6].strftime("%Y-%m-%d %H:%M:%S")
-    header = ["id", "title", "content", "user_id",
-              "category_id", "created_at", "updated_at"]
+    header = ["id", "title", "content", "user_id", "category_id", "created_at", "updated_at", "author"]
 
     cursor.close()
     db.close()
     return json.dumps(dict(zip(header, record)))
+
 
 
 @app.route('/posts/<int:post_id>', methods=['DELETE'])

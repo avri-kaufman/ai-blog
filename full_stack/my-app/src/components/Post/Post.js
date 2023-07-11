@@ -86,7 +86,7 @@ const Post = (props) => {
         <Typography variant="h6" gutterBottom>
           {props.title}
         </Typography>
-        <Typography color="textSecondary">written by: {userName}</Typography>
+        <Typography color="textSecondary">Written by: {userName}</Typography>
         <Typography variant="body1" gutterBottom>
           {abbreviatedContent}
         </Typography>
