@@ -4,6 +4,7 @@ import { Card, CardContent, Typography, IconButton } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import EditIcon from "@mui/icons-material/Edit";
+import Comments from "../comment/Comments";
 
 const PostPage = () => {
   const { id } = useParams();
@@ -100,6 +101,7 @@ const PostPage = () => {
         <Typography color="textSecondary">
           Updated at: {post.updated_at}
         </Typography>
+        <Comments postId={id}/>
       </CardContent>
     </Card>
   );

@@ -346,6 +346,76 @@ def delete_post(post_id):
 #     except Exception as ex:
 #         print(ex)
 
+@app.route('/posts/<post_id>/comments', methods=['GET'])
+def get_comments_by_post(post_id):
+    db = pool.get_connection()
+    cursor = db.cursor()
+    query = "SELECT c.id, c.content, c.user_id, c.created_at, u.username AS author FROM comments c JOIN users u ON c.user_id = u.id WHERE c.post_id = %s"
+    values = (post_id,)
+    cursor.execute(query, values)
+    records = cursor.fetchall()
+
+    if not records:
+        db.close()
+        abort(404)
+
+    data = []
+    for record in records:
+        record = list(record)
+        record[3] = record[3].strftime("%Y-%m-%d %H:%M:%S")
+        header = ["id", "conte\nt", "user_id", "created_at", "author"]
+        data.append(dict(zip(header, record)))
+
+    cursor.close()
+    db.close()
+    return json.dumps(data)
+
+@app.route('/posts/<post_id>/comments', methods=['POST'])
+def add_comment(post_id):
+    login_status = check_login_status()
+    
+    if login_status["status"] == "error":
+        return make_response(jsonify({'message': 'You need to log in to add a comment.'}), 401)
+    
+    user_id = login_status["user_id"]
+    
+    db = pool.get_connection()
+    data = request.get_json()
+    content = data['content']
+
+    cursor = db.cursor()
+    query = "INSERT INTO comments (content, user_id, post_id) VALUES (%s, %s, %s, Now())"
+    values = (content, user_id, post_id)
+    cursor.execute(query, values)
+    db.commit()
+
+    new_comment_id = cursor.lastrowid
+    cursor.close()
+    db.close()
+
+    return get_single_comment(new_comment_id)
+
+def get_single_comment(comment_id):
+    db = pool.get_connection()
+    cursor = db.cursor()
+    query = "SELECT c.id, c.content, c.user_id, c.created_at, u.username AS author FROM comments c JOIN users u ON c.user_id = u.id WHERE c.id = %s"
+    values = (comment_id,)
+    cursor.execute(query, values)
+    record = cursor.fetchone()
+
+    if not record:
+        db.close()
+        abort(404)
+
+    record = list(record)
+    record[3] = record[3].strftime("%Y-%m-%d %H:%M:%S")
+    header = ["id", "content", "user_id", "created_at", "author"]
+    result = dict(zip(header, record))
+
+    cursor.close()
+    db.close()
+    return json.dumps(result)
+
 
 if __name__ == "__main__":
     app.run()
