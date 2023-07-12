@@ -53,7 +53,7 @@ const Comments = ({ postId }) => {
           setCommentText("");
           handleClose();
           alert("You need to log in to add a comment."); // Display an alert message
-          return; // Stop the execution of the function
+          return; // Stop the execution of the function//
         }
 
         const commentData = {
