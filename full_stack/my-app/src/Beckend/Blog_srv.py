@@ -44,10 +44,13 @@ def signup():
     cursor = db.cursor()
     cursor.execute(query, values)
     db.commit()
-    new_user = cursor.lastrowid
+    new_user_id = cursor.lastrowid
     cursor.close()
     db.close()
-    return get_user_by_id(new_user)
+
+    return get_user_by_id(new_user_id)  # Assuming get_user_by_id implementation exists
+
+
 
 @app.route('/get_user_by_id/<user_id>', methods=['GET'])
 def get_user_by_id(user_id):
@@ -241,7 +244,7 @@ def edit_post(post_id):
 def get_single_post(post_id):
     db = pool.get_connection()
     cursor = db.cursor()
-    query = "SELECT p.id, p.title, p.content, p.user_id, p.category_id, p.created_at, p.updated_at, u.username AS author FROM Posts p JOIN users u ON p.user_id = u.id WHERE p.id = %s"
+    query = "SELECT p.id, p.title, p.content, p.user_id, p.category_id, p.created_at, p.updated_at, u.username AS author, c.name AS category_name FROM Posts p JOIN users u ON p.user_id = u.id JOIN categories c ON p.category_id = c.id WHERE p.id = %s"
     values = (post_id,)
     cursor.execute(query, values)
     record = cursor.fetchone()
@@ -254,11 +257,12 @@ def get_single_post(post_id):
 
     record[5] = record[5].strftime("%Y-%m-%d %H:%M:%S")
     record[6] = record[6].strftime("%Y-%m-%d %H:%M:%S")
-    header = ["id", "title", "content", "user_id", "category_id", "created_at", "updated_at", "author"]
+    header = ["id", "title", "content", "user_id", "category_id", "created_at", "updated_at", "author", "category_name"]
 
     cursor.close()
     db.close()
     return json.dumps(dict(zip(header, record)))
+
 
 
 

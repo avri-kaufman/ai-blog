@@ -10,14 +10,16 @@ const PostPage = () => {
   const { id } = useParams();
   const [post, setPost] = useState(null);
   const [userId, setUserId] = useState(null);
-  const [author, setAuthor] = useState(null); // Added
+  const [author, setAuthor] = useState(null);
+  const [categoryName, setCategoryName] = useState(""); // Added
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
       const res = await axios.get(`/posts/${id}`);
       setPost(res.data);
-      setAuthor(res.data.author); // Set the author
+      setAuthor(res.data.author);
+      setCategoryName(res.data.category_name); // Set the category name
     };
 
     fetchPost();
@@ -90,18 +92,15 @@ const PostPage = () => {
           {post.title}
         </Typography>
         <Typography color="textSecondary">Written by: {author}</Typography>
-
         {postContent}
-        <Typography color="textSecondary">
-          Category: {post.category_id}
-        </Typography>
+        <Typography color="textSecondary">Category: {categoryName}</Typography>
         <Typography color="textSecondary">
           Created at: {post.created_at}
         </Typography>
         <Typography color="textSecondary">
           Updated at: {post.updated_at}
         </Typography>
-        <Comments postId={id}/>
+        <Comments postId={id} />
       </CardContent>
     </Card>
   );
