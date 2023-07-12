@@ -45,14 +45,36 @@ const Comments = ({ postId }) => {
 
   const handleAddComment = async () => {
     if (commentText !== "") {
-      const res = await axios.post(`/posts/${postId}/comments`, {
-        content: commentText,
-        author: "Anonymous", // Assuming a default value for the author
-      });
-      if (res.data.status === "success") {
-        setComments((prevComments) => [...prevComments, res.data.comment]);
+      try {
+        const loginStatusResponse = await axios.get("/check_login_status");
+        const loginStatus = loginStatusResponse.data;
+
+        if (loginStatus.status === "error") {
+          setCommentText("");
+          handleClose();
+          alert("You need to log in to add a comment."); // Display an alert message
+          return; // Stop the execution of the function
+        }
+
+        const commentData = {
+          content: commentText,
+          author: "Anonymous",
+        };
+        //eslint-disable-next-line no-unused-vars
+        const addCommentResponse = await axios.post(
+          `/posts/${postId}/comments`,
+          commentData
+        );
+
+        // Always close the modal and clear the comment text if the POST operation succeeds
         setCommentText("");
         handleClose();
+
+        // Immediately fetch and update the comments
+        const fetchRes = await axios.get(`/posts/${postId}/comments`);
+        setComments(fetchRes.data);
+      } catch (error) {
+        console.error("Failed to post comment:", error);
       }
     }
   };
@@ -73,7 +95,7 @@ const Comments = ({ postId }) => {
             </IconButton>
           </Typography>
           {comments.map((comment) => (
-            <Card key={comment._id} style={{ marginTop: "1em" }}>
+            <Card key={comment.id} style={{ marginTop: "1em" }}>
               <CardContent>
                 <Typography variant="body1" gutterBottom>
                   {comment.content}

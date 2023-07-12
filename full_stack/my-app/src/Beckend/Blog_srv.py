@@ -363,7 +363,7 @@ def get_comments_by_post(post_id):
     for record in records:
         record = list(record)
         record[3] = record[3].strftime("%Y-%m-%d %H:%M:%S")
-        header = ["id", "conte\nt", "user_id", "created_at", "author"]
+        header = ["id", "content", "user_id", "created_at", "author"]
         data.append(dict(zip(header, record)))
 
     cursor.close()
@@ -384,7 +384,7 @@ def add_comment(post_id):
     content = data['content']
 
     cursor = db.cursor()
-    query = "INSERT INTO comments (content, user_id, post_id) VALUES (%s, %s, %s, Now())"
+    query = "INSERT INTO comments (content, user_id, post_id, created_at) VALUES (%s, %s, %s, Now())"
     values = (content, user_id, post_id)
     cursor.execute(query, values)
     db.commit()
