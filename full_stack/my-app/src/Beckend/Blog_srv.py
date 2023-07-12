@@ -289,10 +289,15 @@ def delete_post(post_id):
                 post_author_id = result[0]
                 # Compare logged-in user_id and post author's user_id
                 if user_id == post_author_id:
-                    # If match, proceed to delete the post
-                    query = "DELETE FROM Posts WHERE id = %s"
+                    # Delete comments associated with the post
+                    query = "DELETE FROM comments WHERE post_id = %s"
                     values = (post_id,)
                     cursor.execute(query, values)
+
+                    # Delete the post
+                    query = "DELETE FROM Posts WHERE id = %s"
+                    cursor.execute(query, values)
+
                     db.commit()
                     cursor.close()
                     db.close()
@@ -305,6 +310,7 @@ def delete_post(post_id):
             return {"status": "error", "message": "Not logged in"}, 403
     else:
         return {"status": "error", "message": "Not logged in"}, 403
+
 
 
 # need to fix the js code on the search post... button
