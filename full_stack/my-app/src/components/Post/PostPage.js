@@ -27,7 +27,7 @@ const PostPage = () => {
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const res = await axios.get("/check_login_status");
+      const res = await axios.get("/login_status");
       if (res.data.status === "success") {
         setUserId(res.data.user_id);
       }

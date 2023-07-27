@@ -46,7 +46,7 @@ const Comments = ({ postId }) => {
   const handleAddComment = async () => {
     if (commentText !== "") {
       try {
-        const loginStatusResponse = await axios.get("/check_login_status");
+        const loginStatusResponse = await axios.get("/login_status");
         const loginStatus = loginStatusResponse.data;
 
         if (loginStatus.status === "error") {

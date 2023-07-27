@@ -13,7 +13,7 @@ class NavBar extends React.Component {
 
   checkLoginStatus = async () => {
     try {
-      const response = await axios.get("/check_login_status");
+      const response = await axios.get("/login_status");
       if (response.data.status === "success") {
         this.setState({ isLoggedIn: true });
       }

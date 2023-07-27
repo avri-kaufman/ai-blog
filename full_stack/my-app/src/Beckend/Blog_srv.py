@@ -48,14 +48,14 @@ def signup():
     cursor.close()
     db.close()
 
-    return get_user_by_id(new_user_id)  # Assuming get_user_by_id implementation exists
+    return get_user_by_id(new_user_id)
 
 
 
-@app.route('/get_user_by_id/<user_id>', methods=['GET'])
+@app.route('/user/<user_id>', methods=['GET'])
 def get_user_by_id(user_id):
     db = pool.get_connection()
-    query = "select username, email, password, created_at from users where id = %s"
+    query = "select username, email, created_at from users where id = %s"
     value = (user_id,)
     cursor = db.cursor()
     cursor.execute(query, value)
@@ -63,8 +63,8 @@ def get_user_by_id(user_id):
     cursor.close()
     db.close()
     record = list(record)
-    record[3] = record[3].strftime("%Y-%m-%d %H:%M:%S")
-    header = ['username', "email", "hash_passowrd", "created_at"]
+    record[2] = record[2].strftime("%Y-%m-%d %H:%M:%S")
+    header = ['username', "email", "created_at"]
     return json.dumps(dict(zip(header, record)))
 
 
@@ -103,7 +103,7 @@ def login():
     return resp
 
 
-@app.route('/check_login_status', methods=['GET'])
+@app.route('/login_status', methods=['GET'])
 def check_login_status():
     db = pool.get_connection()
     session_id = request.cookies.get('session_id')
@@ -145,32 +145,27 @@ def logout():
 
 @app.route('/posts', methods=['GET'])
 def get_all_posts():
-    
     try:
         db = pool.get_connection()
-        curser = db.cursor()
-        query = "SELECT id, title, content, user_id, category_id, created_at, updated_at FROM Posts"
-        curser.execute(query)
-        records = curser.fetchall()
-        header = ["id", "title", "content", "user_id",
-                  "category_id", "created_at", "updated_at"]
+        cursor = db.cursor()
+        query = """
+        SELECT posts.id, posts.title, posts.content, posts.user_id, categories.name, posts.created_at, posts.updated_at 
+        FROM Posts AS posts
+        LEFT JOIN categories ON posts.category_id = categories.id
+        """
+        cursor.execute(query)
+        records = cursor.fetchall()
+        header = ["id", "title", "content", "user_id", "category_name", "created_at", "updated_at"]
 
         data = []
         for record in records:
             record = list(record)
-            query = "SELECT name FROM categories WHERE id = %s"
-            values = (str(record[4]),)
-            curser.execute(query, values)
-            category_name = curser.fetchone()
-            if category_name:
-                record[4] = category_name[0]
-            else:
-                record[4] = 'Category not found'
+            record[4] = record[4] if record[4] else 'Category not found'
             record[5] = record[5].strftime("%Y-%m-%d %H:%M:%S")
             record[6] = record[6].strftime("%Y-%m-%d %H:%M:%S")
             data.append(dict(zip(header, record)))
 
-        curser.close()
+        cursor.close()
         db.close()
         return json.dumps(data)
     except Exception as ex:
@@ -265,7 +260,6 @@ def get_single_post(post_id):
 
 
 
-
 @app.route('/posts/<int:post_id>', methods=['DELETE'])
 def delete_post(post_id):
     db = pool.get_connection()
@@ -274,87 +268,49 @@ def delete_post(post_id):
     # Get the session_id from the request cookies
     session_id = request.cookies.get('session_id')
 
-    if session_id:
-        # Fetch the logged-in user_id
-        query = "SELECT user_id FROM sessions WHERE session_id = %s"
-        values = (session_id,)
-        cursor.execute(query, values)
-        result = cursor.fetchone()
-
-        if result:
-            user_id = result[0]
-            # Fetch the author of the post
-            query = "SELECT user_id FROM Posts WHERE id = %s"
-            values = (post_id,)
-            cursor.execute(query, values)
-            result = cursor.fetchone()
-
-            if result:
-                post_author_id = result[0]
-                # Compare logged-in user_id and post author's user_id
-                if user_id == post_author_id:
-                    # Delete comments associated with the post
-                    query = "DELETE FROM comments WHERE post_id = %s"
-                    values = (post_id,)
-                    cursor.execute(query, values)
-
-                    # Delete the post
-                    query = "DELETE FROM Posts WHERE id = %s"
-                    cursor.execute(query, values)
-
-                    db.commit()
-                    cursor.close()
-                    db.close()
-                    return {"status": "success", "message": "Post deleted"}, 200
-                else:
-                    return {"status": "error", "message": "Permission denied"}, 403
-            else:
-                return {"status": "error", "message": "Post not found"}, 404
-        else:
-            return {"status": "error", "message": "Not logged in"}, 403
-    else:
+    if not session_id:
         return {"status": "error", "message": "Not logged in"}, 403
 
+    # Fetch the logged-in user_id
+    query = "SELECT user_id FROM sessions WHERE session_id = %s"
+    values = (session_id,)
+    cursor.execute(query, values)
+    result = cursor.fetchone()
 
+    if not result:
+        return {"status": "error", "message": "Not logged in"}, 403
 
-# need to fix the js code on the search post... button
-# @app.route('/search', methods=['GET'])
-# def search():
-#     try:
-#         query = request.args.get('q')
-#         cursor = db.cursor()
-#         search_query = f"SELECT id, title, content, user_id, category_id, created_at, updated_at FROM Posts WHERE content LIKE '%%{query}%%'"
-#         cursor.execute(search_query)
-#         records = cursor.fetchall()
+    user_id = result[0]
 
-#         if not records:
-#             abort(404)
+    # Fetch the author of the post
+    query = "SELECT user_id FROM Posts WHERE id = %s"
+    values = (post_id,)
+    cursor.execute(query, values)
+    result = cursor.fetchone()
 
-#         header = ["id", "title", "content", "user_id",
-#                   "category_id", "created_at", "updated_at"]
-#         data = []
-#         for record in records:
-#             record = list(record)
+    if not result:
+        return {"status": "error", "message": "Post not found"}, 404
 
-#             # Fetch the category name
-#             query = "SELECT name FROM categories WHERE id = %s"
-#             values = (str(record[4]),)
-#             cursor.execute(query, values)
-#             category_name = cursor.fetchone()
-#             if category_name:
-#                 record[4] = category_name[0]
-#             else:
-#                 record[4] = 'Category not found'
+    post_author_id = result[0]
 
-#             record[5] = record[5].strftime("%Y-%m-%d %H:%M:%S")
-#             record[6] = record[6].strftime("%Y-%m-%d %H:%M:%S")
-#             data.append(dict(zip(header, record)))
+    # Compare logged-in user_id and post author's user_id
+    if user_id != post_author_id:
+        return {"status": "error", "message": "Permission denied"}, 403
 
-#         cursor.close()
-#         return json.dumps(data)
+    # Delete comments associated with the post
+    query = "DELETE FROM comments WHERE post_id = %s"
+    values = (post_id,)
+    cursor.execute(query, values)
 
-#     except Exception as ex:
-#         print(ex)
+    # Delete the post
+    query = "DELETE FROM Posts WHERE id = %s"
+    cursor.execute(query, values)
+
+    db.commit()
+    cursor.close()
+    db.close()
+
+    return {"status": "success", "message": "Post deleted"}, 200
 
 @app.route('/posts/<post_id>/comments', methods=['GET'])
 def get_comments_by_post(post_id):

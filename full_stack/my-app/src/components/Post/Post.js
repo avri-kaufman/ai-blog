@@ -12,7 +12,7 @@ const Post = (props) => {
 
   useEffect(() => {
     const checkLoginStatus = async () => {
-      const res = await axios.get("/check_login_status");
+      const res = await axios.get("/login_status");
       if (res.data.status === "success") {
         setUserId(res.data.user_id);
       }
@@ -20,7 +20,7 @@ const Post = (props) => {
 
     const getUserById = async () => {
       try {
-        const res = await axios.get(`/get_user_by_id/${props.user_id}`);
+        const res = await axios.get(`/user/${props.user_id}`);
         if (res.status === 200) {
           setUserName(res.data.username); // Update username state
         }
