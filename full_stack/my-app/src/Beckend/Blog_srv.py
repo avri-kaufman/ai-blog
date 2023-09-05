@@ -3,10 +3,9 @@ import bcrypt
 import json
 from settings import dbpwd
 import mysql.connector as mysql
-from flask import Flask, request,jsonify,  abort, make_response, redirect
+from flask import Flask, request, jsonify, abort, make_response, redirect 
 from datetime import datetime
 from functools import wraps
-
 
 
 pool = mysql.pooling.MySQLConnectionPool(
@@ -19,7 +18,7 @@ pool = mysql.pooling.MySQLConnectionPool(
     pool_name="blog_avi"
 )
 
-
+#
 # db = mysql.connect(
 #     host="database-avi.cbrdyb6rueag.eu-central-1.rds.amazonaws.com",
 #     user="admin",
@@ -28,6 +27,7 @@ pool = mysql.pooling.MySQLConnectionPool(
 # )
 
 app = Flask(__name__)
+
 
 @app.route('/SignUp', methods=['POST'])
 def signup():
@@ -49,7 +49,6 @@ def signup():
     db.close()
 
     return get_user_by_id(new_user_id)
-
 
 
 @app.route('/user/<user_id>', methods=['GET'])
@@ -98,7 +97,8 @@ def login():
     db.commit()
     cursor.close()
     db.close()
-    resp = make_response({"status": "success", "message": "Logged in successfully", "session_id": session_id})
+    resp = make_response(
+        {"status": "success", "message": "Logged in successfully", "session_id": session_id})
     resp.set_cookie("session_id", value=session_id)
     return resp
 
@@ -117,9 +117,8 @@ def check_login_status():
         db.close()
         if result:
             return {"status": "success", "message": "Logged in", "user_id": result[0]}
-    db.close()     
+    db.close()
     return {"status": "error", "message": "Not logged in"}
-   
 
 
 @app.route('/Logout', methods=['POST'])
@@ -155,7 +154,8 @@ def get_all_posts():
         """
         cursor.execute(query)
         records = cursor.fetchall()
-        header = ["id", "title", "content", "user_id", "category_name", "created_at", "updated_at"]
+        header = ["id", "title", "content", "user_id",
+                  "category_name", "created_at", "updated_at"]
 
         data = []
         for record in records:
@@ -175,38 +175,38 @@ def get_all_posts():
 @app.route('/posts', methods=['POST'])
 def add_new_post():
     login_status = check_login_status()
-    
+
     if login_status["status"] == "error":
         return make_response(jsonify({'message': 'You need to log in to add a new post.'}), 401)
-    
+
     user_id = login_status["user_id"]
-    
+
     db = pool.get_connection()
     data = request.get_json()
     query = 'insert into Posts (title, content, user_id, category_id) values(%s, %s, %s, %s)'
     values = (data['title'], data['content'], user_id, 1)
-    
+
     cursor = db.cursor()
     cursor.execute(query, values)
-    
+
     db.commit()
-    
+
     new_post_id = cursor.lastrowid
     cursor.close()
     db.close()
-    
+
     return get_single_post(new_post_id)
 
 
 @app.route('/posts/<post_id>', methods=['PUT'])
 def edit_post(post_id):
     login_status = check_login_status()
-    
+
     if login_status["status"] == "error":
         return make_response(jsonify({'message': 'You need to log in to edit a post.'}), 401)
 
     user_id = login_status["user_id"]
-    
+
     db = pool.get_connection()
     data = request.get_json()
 
@@ -223,7 +223,8 @@ def edit_post(post_id):
 
     # Update the post
     query = 'UPDATE Posts SET title = %s, content = %s WHERE id = %s'
-    values = (data['title'], data['content'], post_id)#need to update last update
+    # need to update last update
+    values = (data['title'], data['content'], post_id)
     cursor.execute(query, values)
 
     db.commit()
@@ -232,7 +233,6 @@ def edit_post(post_id):
     db.close()
 
     return get_single_post(post_id)
-
 
 
 @app.route('/posts/<post_id>', methods=['GET'])
@@ -252,12 +252,12 @@ def get_single_post(post_id):
 
     record[5] = record[5].strftime("%Y-%m-%d %H:%M:%S")
     record[6] = record[6].strftime("%Y-%m-%d %H:%M:%S")
-    header = ["id", "title", "content", "user_id", "category_id", "created_at", "updated_at", "author", "category_name"]
+    header = ["id", "title", "content", "user_id", "category_id",
+              "created_at", "updated_at", "author", "category_name"]
 
     cursor.close()
     db.close()
     return json.dumps(dict(zip(header, record)))
-
 
 
 @app.route('/posts/<int:post_id>', methods=['DELETE'])
@@ -312,6 +312,7 @@ def delete_post(post_id):
 
     return {"status": "success", "message": "Post deleted"}, 200
 
+
 @app.route('/posts/<post_id>/comments', methods=['GET'])
 def get_comments_by_post(post_id):
     db = pool.get_connection()
@@ -336,15 +337,16 @@ def get_comments_by_post(post_id):
     db.close()
     return json.dumps(data)
 
+
 @app.route('/posts/<post_id>/comments', methods=['POST'])
 def add_comment(post_id):
     login_status = check_login_status()
-    
+
     if login_status["status"] == "error":
         return make_response(jsonify({'message': 'You need to log in to add a comment.'}), 401)
-    
+
     user_id = login_status["user_id"]
-    
+
     db = pool.get_connection()
     data = request.get_json()
     content = data['content']
@@ -360,6 +362,7 @@ def add_comment(post_id):
     db.close()
 
     return get_single_comment(new_comment_id)
+
 
 def get_single_comment(comment_id):
     db = pool.get_connection()
