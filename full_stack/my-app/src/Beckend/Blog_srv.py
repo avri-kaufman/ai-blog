@@ -3,7 +3,7 @@ import bcrypt
 import json
 from settings import dbpwd
 import mysql.connector as mysql
-from flask import Flask, request, jsonify, abort, make_response, redirect 
+from flask import Flask, request, jsonify, abort, make_response, redirect
 from datetime import datetime
 from functools import wraps
 
@@ -18,7 +18,7 @@ pool = mysql.pooling.MySQLConnectionPool(
     pool_name="blog_avi"
 )
 
-#
+
 # db = mysql.connect(
 #     host="database-avi.cbrdyb6rueag.eu-central-1.rds.amazonaws.com",
 #     user="admin",
@@ -384,6 +384,49 @@ def get_single_comment(comment_id):
     cursor.close()
     db.close()
     return json.dumps(result)
+
+
+@app.route('/search', methods=['GET'])
+def search():
+    query = request.args.get('q')
+
+    if not query:
+        return make_response(jsonify({"message": "Query parameter 'q' is required!"}), 400)
+
+    try:
+        db = pool.get_connection()
+        cursor = db.cursor()
+
+        # Using LIKE for a case-insensitive search in a standard SQL fashion.
+        # Adjust the SQL syntax according to your database system if necessary.
+        search_query = """
+        SELECT posts.id, posts.title, posts.content, posts.user_id, categories.name AS category_name, posts.created_at, posts.updated_at 
+        FROM Posts AS posts
+        LEFT JOIN categories ON posts.category_id = categories.id
+        WHERE posts.content LIKE %s
+        """
+        search_value = ("%" + query + "%",)
+
+        cursor.execute(search_query, search_value)
+        records = cursor.fetchall()
+        header = ["id", "title", "content", "user_id",
+                  "category_name", "created_at", "updated_at"]
+
+        data = []
+        for record in records:
+            record = list(record)
+            record[4] = record[4] if record[4] else 'Category not found'
+            record[5] = record[5].strftime("%Y-%m-%d %H:%M:%S")
+            record[6] = record[6].strftime("%Y-%m-%d %H:%M:%S")
+            data.append(dict(zip(header, record)))
+
+        cursor.close()
+        db.close()
+        return json.dumps(data)
+
+    except Exception as ex:
+        print(ex)
+        return make_response(jsonify({"message": "An error occurred while searching."}), 500)
 
 
 if __name__ == "__main__":

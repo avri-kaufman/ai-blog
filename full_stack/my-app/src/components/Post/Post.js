@@ -31,7 +31,7 @@ const Post = (props) => {
 
     checkLoginStatus();
     getUserById(); // call this function
-  }, []);
+  }, [props.user_id]); // added props.user_id to the dependency array
 
   let sentences = props.content.split(". ");
   let abbreviatedContent = sentences.slice(0, 2).join(". ");
