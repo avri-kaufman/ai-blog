@@ -7,7 +7,6 @@ import axios from "axios";
 function NavBar() {
   const [query, setQuery] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [results, setResults] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {

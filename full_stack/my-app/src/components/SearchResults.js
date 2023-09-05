@@ -18,7 +18,7 @@ function SearchResults() {
       <Card style={{ margin: "16px" }}>
         <CardContent>
           <Typography variant="h4" gutterBottom>
-          Search Results
+            Search Results
           </Typography>
         </CardContent>
       </Card>
@@ -41,4 +41,3 @@ function SearchResults() {
 }
 
 export default SearchResults;
-
