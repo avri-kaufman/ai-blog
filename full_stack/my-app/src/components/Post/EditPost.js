@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Grid, Box, Typography, TextField, Button } from "@mui/material";
+import { Grid, Box, Typography, Button, FormControl, InputLabel,OutlinedInput, } from "@mui/material";
 import axios from "axios";
 
 const EditPost = () => {
@@ -65,7 +65,6 @@ const EditPost = () => {
         }
       });
   };
-
   return (
     <Box id="editPost" display="flex" justifyContent="center">
       <Box width="50%">
@@ -75,26 +74,28 @@ const EditPost = () => {
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                helperText="Edit post title"
-                id="title"
-                label="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="title">Title</InputLabel>
+                <OutlinedInput
+                  id="title"
+                  label="Title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                />
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
-              <TextField
-                fullWidth
-                id="content"
-                label="Content"
-                helperText="Edit post content"
-                multiline
-                rows={4}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
+              <FormControl fullWidth variant="outlined">
+                <InputLabel htmlFor="content">Content</InputLabel>
+                <OutlinedInput
+                  id="content"
+                  label="Content"
+                  multiline
+                  rows={4}
+                  value={content}
+                  onChange={(e) => setContent(e.target.value)}
+                />
+              </FormControl>
             </Grid>
             <Grid item xs={12}>
               <Button

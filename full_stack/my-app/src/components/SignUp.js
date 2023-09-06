@@ -2,11 +2,13 @@ import React from "react";
 import {
   Grid,
   Box,
-  TextField,
   Button,
   Card,
   CardContent,
   Typography,
+  FormControl,
+  InputLabel,
+  OutlinedInput
 } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -33,12 +35,9 @@ const SignUp = () => {
     axios
       .post("/SignUp", formData)
       .then(() => {
-        // Handle successful sign-up
-        // Redirect the user to the login page
         navigate("/Login");
       })
       .catch((error) => {
-        // Handle sign-up error
         console.error(error);
       });
   };
@@ -59,39 +58,42 @@ const SignUp = () => {
             <form onSubmit={handleSignup}>
               <Grid container spacing={3}>
                 <Grid item xs={12}>
-                  <TextField
-                    name="username"
-                    fullWidth
-                    helperText="Please enter your name"
-                    id="username"
-                    label="Name"
-                    value={formData.username}
-                    onChange={handleChange}
-                  />
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel htmlFor="username">Name</InputLabel>
+                    <OutlinedInput
+                      id="username"
+                      label="Name"
+                      name="username"
+                      value={formData.username}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    name="email"
-                    fullWidth
-                    helperText="Please enter your email"
-                    id="email"
-                    label="Email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                  />
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel htmlFor="email">Email</InputLabel>
+                    <OutlinedInput
+                      id="email"
+                      label="Email"
+                      name="email"
+                      type="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
                 </Grid>
                 <Grid item xs={12}>
-                  <TextField
-                    name="password"
-                    fullWidth
-                    id="password"
-                    label="Password"
-                    type="password"
-                    autoComplete="current-password"
-                    value={formData.password}
-                    onChange={handleChange}
-                  />
+                  <FormControl fullWidth variant="outlined">
+                    <InputLabel htmlFor="password">Password</InputLabel>
+                    <OutlinedInput
+                      id="password"
+                      label="Password"
+                      type="password"
+                      name="password"
+                      value={formData.password}
+                      onChange={handleChange}
+                    />
+                  </FormControl>
                 </Grid>
                 <Grid item xs={12}>
                   <Button

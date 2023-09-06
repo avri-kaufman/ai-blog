@@ -8,6 +8,7 @@ import {
   CardContent,
   Typography,
   CircularProgress,
+  FormControl,
 } from "@mui/material";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
@@ -53,7 +54,7 @@ class Login extends React.Component {
         id="login"
         display="flex"
         justifyContent="center"
-        style={{ margin: "16px" }}
+        style={{ margin: '16px' }}
       >
         <Card>
           <CardContent>
@@ -64,29 +65,31 @@ class Login extends React.Component {
               <form onSubmit={this.handleSubmit}>
                 <Grid container spacing={3}>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      helperText="Please enter your name"
-                      id="username"
-                      label="Name"
-                      name="username"
-                      value={this.state.username}
-                      onChange={this.handleInputChange}
-                      disabled={loading}
-                    />
+                    <FormControl fullWidth>
+                      <TextField
+                        helperText="Please enter your name"
+                        id="username"
+                        label="Name"
+                        name="username"
+                        value={this.state.username}
+                        onChange={this.handleInputChange}
+                        disabled={loading}
+                      />
+                    </FormControl>
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      id="password"
-                      label="Password"
-                      type="password"
-                      autoComplete="current-password"
-                      name="password"
-                      value={this.state.password}
-                      onChange={this.handleInputChange}
-                      disabled={loading}
-                    />
+                    <FormControl fullWidth>
+                      <TextField
+                        id="password"
+                        label="Password"
+                        type="password"
+                        autoComplete="current-password"
+                        name="password"
+                        value={this.state.password}
+                        onChange={this.handleInputChange}
+                        disabled={loading}
+                      />
+                    </FormControl>
                   </Grid>
                   <Grid item xs={12}>
                     <Button

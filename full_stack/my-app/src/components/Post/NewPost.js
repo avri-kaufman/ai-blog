@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Box, TextField, Button, Typography } from "@mui/material";
+import { Grid, Box, TextField, Button, Typography, FormControl } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -53,10 +53,10 @@ const NewPost = () => {
   return (
     <Box id="newPost" display="flex" justifyContent="center">
       <Box width="50%">
-      <Box textAlign="center">
+        <Box textAlign="center">
           <Typography variant="h3">New Post</Typography>
         </Box>
-        <form onSubmit={handleSubmit}>
+        <FormControl component="form" onSubmit={handleSubmit} fullWidth>
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <TextField
@@ -92,10 +92,11 @@ const NewPost = () => {
               <Box textAlign="center"><Typography variant="body1">{resp}</Typography></Box>
             </Grid>
           </Grid>
-        </form>
+        </FormControl>
       </Box>
     </Box>
   );
 };
+
 
 export default NewPost;
