@@ -13,7 +13,6 @@ import ContactMe from "../ContactMe";
 import AboutTheBlog from "../AboutTheBlog";
 import EditPost from "../Post/EditPost";
 import SearchResults from "../SearchResults.js";
-
 function App() {
   const posts = [
     {
@@ -35,24 +34,22 @@ function App() {
   ];
   return (
     <Router>
-      <div className="App">
-        <NavBar />
+      <NavBar />
 
-        <Routes>
-          <Route path="/AboutTheBlog" element={<AboutTheBlog />} />
-          <Route path="/posts" element={<Posts />} />
-          <Route path="/NewPost" element={<NewPost />} />
-          <Route path="/edit-post/:id" element={<EditPost />} />
-          <Route path="/post/:id" element={<PostPage posts={posts} />} />
-          <Route path="/post/:id" element={<PostPage posts={posts} />} />
-          <Route path="/" element={<HomePage posts={posts} />} />
-          <Route path="/Login" element={<Login />} />
-          <Route path="/ContactMe" element={<ContactMe />} />
-          <Route path="/Logout" element={<Logout />} />
-          <Route path="/SignUp" element={<SignUp />} />
-          <Route path="/search-results" element={<SearchResults />} />
-        </Routes>
-      </div>
+      <Routes>
+        <Route path="/AboutTheBlog" element={<AboutTheBlog />} />
+        <Route path="/posts" element={<Posts />} />
+        <Route path="/NewPost" element={<NewPost />} />
+        <Route path="/edit-post/:id" element={<EditPost />} />
+        <Route path="/post/:id" element={<PostPage posts={posts} />} />
+        <Route path="/post/:id" element={<PostPage posts={posts} />} />
+        <Route path="/" element={<HomePage posts={posts} />} />
+        <Route path="/Login" element={<Login />} />
+        <Route path="/ContactMe" element={<ContactMe />} />
+        <Route path="/Logout" element={<Logout />} />
+        <Route path="/SignUp" element={<SignUp />} />
+        <Route path="/search-results" element={<SearchResults />} />
+      </Routes>
     </Router>
   );
 }

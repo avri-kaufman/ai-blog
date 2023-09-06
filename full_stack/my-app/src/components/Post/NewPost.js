@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Grid, Box, TextField, Button } from "@mui/material";
+import { Grid, Box, TextField, Button, Typography } from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -53,8 +53,8 @@ const NewPost = () => {
   return (
     <Box id="newPost" display="flex" justifyContent="center">
       <Box width="50%">
-        <Box textAlign="center">
-          <h2>New Post</h2>
+      <Box textAlign="center">
+          <Typography variant="h3">New Post</Typography>
         </Box>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
@@ -89,7 +89,7 @@ const NewPost = () => {
               >
                 Submit
               </Button>
-              <Box textAlign="center">{resp && <p>{resp}</p>}</Box>
+              <Box textAlign="center"><Typography variant="body1">{resp}</Typography></Box>
             </Grid>
           </Grid>
         </form>

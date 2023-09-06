@@ -1,10 +1,10 @@
 import React from 'react';
-import { List, ListItem, Typography, Link } from '@mui/material';
+import { List, ListItem, Typography, Link, Container } from '@mui/material';
 
 class Popular extends React.Component {
     render() {
         return (
-            <div style={{ padding: '16px' }}>
+            <Container style={{ padding: '16px' }}>
                 <Typography variant="h5" gutterBottom>Popular</Typography>
                 <List>
                     <ListItem>
@@ -23,7 +23,7 @@ class Popular extends React.Component {
                         </Typography>
                     </ListItem>
                 </List>
-            </div>
+            </Container>
         );
     }
 }

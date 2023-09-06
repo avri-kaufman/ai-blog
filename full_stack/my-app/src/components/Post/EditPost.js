@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Grid, Box, TextField, Button } from "@mui/material";
+import { Grid, Box, Typography, TextField, Button } from "@mui/material";
 import axios from "axios";
 
 const EditPost = () => {
@@ -70,7 +70,7 @@ const EditPost = () => {
     <Box id="editPost" display="flex" justifyContent="center">
       <Box width="50%">
         <Box textAlign="center">
-          <h2>Edit Post</h2>
+          <Typography variant="h3">Edit Post</Typography>
         </Box>
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
@@ -105,7 +105,9 @@ const EditPost = () => {
               >
                 Update
               </Button>
-              <Box textAlign="center">{resp && <p>{resp}</p>}</Box>
+              <Box textAlign="center">
+                {resp && <Typography variant="body1">{resp}</Typography>}
+              </Box>
             </Grid>
           </Grid>
         </form>

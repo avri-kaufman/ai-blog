@@ -1,5 +1,5 @@
 import React from "react";
-import { CircularProgress } from "@mui/material";
+import { CircularProgress, Container } from "@mui/material";
 import axios from "axios";
 
 class Logout extends React.Component {
@@ -28,7 +28,7 @@ class Logout extends React.Component {
   render() {
     const { loading } = this.state;
     return (
-      <div
+      <Container
         style={{
           display: "flex",
           justifyContent: "center",
@@ -37,7 +37,7 @@ class Logout extends React.Component {
         }}
       >
         {loading && <CircularProgress />}
-      </div>
+      </Container>
     );
   }
 }

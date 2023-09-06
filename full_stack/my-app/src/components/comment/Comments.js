@@ -8,6 +8,7 @@ import {
   Modal,
   TextField,
   Button,
+  Container,
 } from "@mui/material";
 import AddCommentIcon from "@mui/icons-material/AddComment";
 import { styled } from "@mui/material/styles";
@@ -80,7 +81,7 @@ const Comments = ({ postId }) => {
   };
 
   return (
-    <div>
+    <Container>
       <Card style={{ marginTop: "1em" }}>
         <CardContent>
           <Typography variant="h5">
@@ -143,7 +144,7 @@ const Comments = ({ postId }) => {
           </CardContent>
         </StyleModal>
       </Modal>
-    </div>
+    </Container>
   );
 };
 

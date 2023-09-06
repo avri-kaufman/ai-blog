@@ -1,6 +1,7 @@
 import React from "react";
 import axios from "axios";
 import Post from "./Post.js";
+import { Container } from "@mui/material";
 
 class Posts extends React.Component {
   constructor(props) {
@@ -33,7 +34,7 @@ class Posts extends React.Component {
   render() {
     const { data } = this.state;
     return (
-      <div>
+      <Container>
         {data.map((item) => (
           <Post
             key={item.id}
@@ -47,7 +48,7 @@ class Posts extends React.Component {
             onDelete={this.handlePostDelete}
           />
         ))}
-      </div>
+      </Container>
     );
   }
 }

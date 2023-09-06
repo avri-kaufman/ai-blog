@@ -8,6 +8,7 @@ import {
   Avatar,
   Card,
   CardContent,
+  Box,
 } from "@mui/material";
 
 class AboutTheBlog extends React.Component {
@@ -36,7 +37,7 @@ class AboutTheBlog extends React.Component {
                     />
                   </Grid>
                 </Grid>
-                <br />
+                <Box height={2} />
                 <Typography variant="h5" gutterBottom>
                   Background
                 </Typography>
@@ -54,7 +55,7 @@ class AboutTheBlog extends React.Component {
                   Tel Aviv has to offer. Whether it's going for a run along the beach,
                   or trying out a new restaurant.
                 </Typography>
-                <br />
+                <Box height={2} />
                 <Typography variant="h5" gutterBottom>
                   Interests
                 </Typography>
@@ -94,7 +95,7 @@ class AboutTheBlog extends React.Component {
                     />
                   </ListItem>
                 </List>
-                <br />
+                <Box height={2} />
                 <Typography variant="h4" gutterBottom>
                   About the Blog
                 </Typography>
@@ -107,15 +108,15 @@ class AboutTheBlog extends React.Component {
                 <Typography variant="body1">
                   So, whether you're a curious beginner or a tech enthusiast seeking to expand your knowledge, this blog is for you. Join me on this journey as we dive into the world of AI, ML, and emerging technologies, and discover how they are shaping our present and future.
                 </Typography>
-                <br />
+                <Box height={2} />
                 <Typography variant="body1">
                   Stay updated with the latest articles and discussions by subscribing to my newsletter. Don't miss out on the opportunity to expand your understanding and join the exciting realm of AI and machine learning!
                 </Typography>
-                <br />
+                <Box height={2} />
                 <Typography variant="body1">
                   Thank you for visiting, and I look forward to sharing this exciting learning adventure with you.
                 </Typography>
-                <br />
+                <Box height={2} />
                 <Typography variant="body1">
                   Best regards,
                 </Typography>
