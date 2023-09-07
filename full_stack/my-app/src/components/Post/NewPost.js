@@ -1,5 +1,12 @@
 import React, { useState } from "react";
-import { Grid, Box, TextField, Button, Typography, FormControl } from "@mui/material";
+import {
+  Grid,
+  Box,
+  TextField,
+  Button,
+  Typography,
+  FormControl,
+} from "@mui/material";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -89,7 +96,9 @@ const NewPost = () => {
               >
                 Submit
               </Button>
-              <Box textAlign="center"><Typography variant="body1">{resp}</Typography></Box>
+              <Box textAlign="center">
+                <Typography variant="body1">{resp}</Typography>
+              </Box>
             </Grid>
           </Grid>
         </FormControl>
@@ -97,6 +106,5 @@ const NewPost = () => {
     </Box>
   );
 };
-
 
 export default NewPost;

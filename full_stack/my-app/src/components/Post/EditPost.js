@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { Grid, Box, Typography, Button, FormControl, InputLabel,OutlinedInput, } from "@mui/material";
+import {
+  Grid,
+  Box,
+  Typography,
+  Button,
+  FormControl,
+  InputLabel,
+  OutlinedInput,
+} from "@mui/material";
 import axios from "axios";
 
 const EditPost = () => {
