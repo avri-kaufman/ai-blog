@@ -12,10 +12,14 @@ const PostPage = () => {
   const [userId, setUserId] = useState(null);
   const [author, setAuthor] = useState(null);
   const [categoryName, setCategoryName] = useState(""); // Added
+  const [views, setViews] = useState(0);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPost = async () => {
+      const views = await axios.post(`/increment_view/${id}`);
+      console.log(views);
+      setViews(views.data); // Set the views count from the response
       const res = await axios.get(`/posts/${id}`);
       setPost(res.data);
       setAuthor(res.data.author);
@@ -100,6 +104,7 @@ const PostPage = () => {
         <Typography color="textSecondary">
           Updated at: {post.updated_at}
         </Typography>
+        <Typography color="textSecondary">Views: {views}</Typography>
         <Comments postId={id} />
       </CardContent>
     </Card>

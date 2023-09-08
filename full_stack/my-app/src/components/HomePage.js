@@ -17,7 +17,7 @@ class HomePage extends React.Component {
           <Posts />
         </Grid>
         <Grid item md={4}>
-          <Latest />
+          {/* <Latest /> */}
           <Popular />
         </Grid>
       </Grid>

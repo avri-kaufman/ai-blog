@@ -1,31 +1,50 @@
-import React from 'react';
-import { List, ListItem, Typography, Link, Container } from '@mui/material';
+import React, { useEffect, useState } from "react";
+import {
+  List,
+  ListItem,
+  Typography,
+  Link,
+  Container,
+  IconButton,
+} from "@mui/material";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-class Popular extends React.Component {
-    render() {
-        return (
-            <Container style={{ padding: '16px' }}>
-                <Typography variant="h5" gutterBottom>Popular</Typography>
-                <List>
-                    <ListItem>
-                        <Typography variant="body1">
-                            Blog post #1 <Link href="#">go to page</Link>
-                        </Typography>
-                    </ListItem>
-                    <ListItem>
-                        <Typography variant="body1">
-                            Blog post #2 <Link href="#">go to page</Link>
-                        </Typography>
-                    </ListItem>
-                    <ListItem>
-                        <Typography variant="body1">
-                            Blog post #3 <Link href="#">go to page</Link>
-                        </Typography>
-                    </ListItem>
-                </List>
-            </Container>
-        );
-    }
-}
+const Popular = () => {
+  const [popularPosts, setPopularPosts] = useState([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchPopularPosts = async () => {
+      const response = await axios.get("/popular_posts");
+      setPopularPosts(response.data);
+    };
+    fetchPopularPosts();
+  }, []);
+
+  return (
+    <Container style={{ padding: "16px" }}>
+      <Typography variant="h5" gutterBottom>
+        Popular
+      </Typography>
+      <List>
+        {popularPosts.map((post) => (
+          <ListItem key={post.id}>
+            <Typography variant="body1">
+              {post.title}{" "}
+              <IconButton
+                onClick={() => {
+                  navigate("post/" + post.id);
+                }}
+              >
+                go to page
+              </IconButton>
+            </Typography>
+          </ListItem>
+        ))}
+      </List>
+    </Container>
+  );
+};
 
 export default Popular;

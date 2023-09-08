@@ -26,7 +26,54 @@ pool = mysql.pooling.MySQLConnectionPool(
 #     database="blogdb",
 # )
 
-app = Flask(__name__)
+# app = Flask(__name__)
+app = Flask(__name__,
+            static_folder="C:/Users/User/Desktop/fullstack_intuit/full_stack/my-app/build",
+            static_url_path='/')
+
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+
+@app.route('/popular_posts', methods=['GET'])
+def get_popular_posts():
+    db = pool.get_connection()
+    cursor = db.cursor()
+    limit = 3
+    values = (limit, )
+    query = "SELECT id, title FROM posts ORDER BY views DESC LIMIT %s"
+    cursor.execute(query, values)
+    records = cursor.fetchall()
+    header = ["id", "title"]
+    cursor.close()
+    db.close()
+    data = []
+    for r in records:
+        data.append(dict(zip(header, r)))
+    return json.dumps(data)
+
+
+@app.route('/increment_view/<int:post_id>', methods=['POST'])
+def increment_view(post_id):
+    # Increment the view count for the specified post in the database
+    # Return a success response
+    db = pool.get_connection()
+    cursor = db.cursor()
+    cursor.execute("SELECT views FROM posts WHERE id = %s", (post_id,))
+    current_views = cursor.fetchone()
+    if not current_views:
+        db.close()
+        abort(500)
+
+    new_views = current_views[0] + 1
+    cursor.execute("UPDATE posts SET views = %s WHERE id = %s",
+                   (new_views, post_id))
+    db.commit()
+    cursor.close()
+    db.close()
+    return str(new_views)
 
 
 @app.route('/SignUp', methods=['POST'])
