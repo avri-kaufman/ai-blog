@@ -8,6 +8,7 @@ from datetime import datetime
 from functools import wraps
 
 
+
 pool = mysql.pooling.MySQLConnectionPool(
     host="database-avi.cbrdyb6rueag.eu-central-1.rds.amazonaws.com",
     user="admin",
@@ -18,15 +19,6 @@ pool = mysql.pooling.MySQLConnectionPool(
     pool_name="blog_avi"
 )
 
-
-# db = mysql.connect(
-#     host="database-avi.cbrdyb6rueag.eu-central-1.rds.amazonaws.com",
-#     user="admin",
-#     password="19091994Avi",
-#     database="blogdb",
-# )
-
-# app = Flask(__name__)
 app = Flask(__name__,
             static_folder="C:/Users/User/Desktop/fullstack_intuit/full_stack/my-app/build",
             static_url_path='/')

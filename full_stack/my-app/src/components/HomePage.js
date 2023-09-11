@@ -1,6 +1,6 @@
 import React from "react";
 import Header from "./Header.js";
-import Latest from "./Post/Latest.js";
+//import Latest from "./Post/Latest.js";
 import Popular from "./Post/Popular.js";
 import "./App/App.css";
 import Grid from "@mui/material/Grid";
