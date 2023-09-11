@@ -9,8 +9,8 @@ from functools import wraps
 
 
 pool = mysql.pooling.MySQLConnectionPool(
-    host="localhost",
-    user="root",
+    host="database-avi.cbrdyb6rueag.eu-central-1.rds.amazonaws.com",
+    user="admin",
     password=dbpwd,
     database="blogdb",
     buffered=True,
