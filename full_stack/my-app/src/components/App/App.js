@@ -42,7 +42,6 @@ function App() {
         <Route path="/NewPost" element={<NewPost />} />
         <Route path="/edit-post/:id" element={<EditPost />} />
         <Route path="/post/:id" element={<PostPage posts={posts} />} />
-        <Route path="/post/:id" element={<PostPage posts={posts} />} />
         <Route path="/" element={<HomePage posts={posts} />} />
         <Route path="/Login" element={<Login />} />
         <Route path="/ContactMe" element={<ContactMe />} />
