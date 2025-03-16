@@ -1,7 +1,7 @@
 import uuid
 import bcrypt
 import json
-from settings import dbpwd
+# from settings import dbpwd
 import mysql.connector as mysql
 from flask import Flask, request, jsonify, abort, make_response, redirect
 from datetime import datetime
@@ -10,9 +10,10 @@ from functools import wraps
 
 
 pool = mysql.pooling.MySQLConnectionPool(
-    host="database-avi.cbrdyb6rueag.eu-central-1.rds.amazonaws.com",
-    user="admin",
-    password=dbpwd,
+    #host="database-avi.cbrdyb6rueag.eu-central-1.rds.amazonaws.com",
+    host='localhost',
+    user="root",
+    password='avi19091994',
     database="blogdb",
     buffered=True,
     pool_size=5,
@@ -20,7 +21,8 @@ pool = mysql.pooling.MySQLConnectionPool(
 )
 
 app = Flask(__name__,
-            static_folder="C:/Users/User/Desktop/fullstack_intuit/full_stack/my-app/build",
+            static_folder="C:/Users/avika/Desktop/gitProject/blog2/full_stack/my-app/build",
+            # static_folder="C:/Users/User/Desktop/fullstack_intuit/full_stack/my-app/build",
             static_url_path='/')
 
 
