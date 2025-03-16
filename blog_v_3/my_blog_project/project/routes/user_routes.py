@@ -1,4 +1,3 @@
-# project/routes/user_routes.py
 from flask import Blueprint, request, jsonify, abort
 from project.services.user_service import signup_user, get_user_by_id
 from project.services.auth_service import login, check_login_status, logout
@@ -14,7 +13,6 @@ def signup():
 
     new_user_id = signup_user(username, email, password)
     user_record = get_user_by_id(new_user_id)
-    # user_record is (username, email, created_at)
     result = {
         "username": user_record[0],
         "email": user_record[1],
