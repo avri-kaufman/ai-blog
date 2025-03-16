@@ -1,0 +1,45 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# PyCharm
+.idea/
+
+# VSCode
+.vscode/
+
+# Jupyter notebooks checkpoints
+.ipynb_checkpoints
+
+# Logs
+*.log
+log/
+
+# Database credentials / environment files
+*.env
+.env.*
+
+# Build outputs / distributions
+build/
+dist/
+
+# If you have a client-side (like React) in your repo
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# If you generate coverage reports
+htmlcov/
+coverage.xml
