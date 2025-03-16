@@ -72,7 +72,7 @@ def signup():
     username = data['username']
     email = data['email']
     password = bcrypt.hashpw(
-        str(data['password']).encode('utf8'), bcrypt.gensalt())
+        str(data['password']).encode('utf8'), bcrypt.gensalt())# TODO: need to read more about that
     created_at = datetime.now()
 
     query = "INSERT INTO users (username, email, password, created_at) VALUES (%s, %s, %s, %s)"
@@ -134,7 +134,7 @@ def login():
     cursor.close()
     db.close()
     resp = make_response(
-        {"status": "success", "message": "Logged in successfully", "session_id": session_id})
+        {"status": "success", "message": "Logged in successfully", "session_id": session_id})#why do we need session id twice
     resp.set_cookie("session_id", value=session_id)
     return resp
 

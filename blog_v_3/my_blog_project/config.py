@@ -2,7 +2,7 @@
 
 class Config:
     DEBUG = True
-    SECRET_KEY = "some-long-random-secret"
+    # SECRET_KEY = "some-long-random-secret"
     
     # Database info
     DB_HOST = "localhost"
@@ -14,5 +14,5 @@ class Config:
 
     # If you're serving a React build (optional):
     # Adjust these paths as needed for your setup
-    STATIC_FOLDER = r"C:/Users/avika/Desktop/gitProject/blog2/blog_v_3/client/build"
+    STATIC_FOLDER = "../client/build"
     STATIC_URL_PATH = "/"
